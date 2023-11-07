@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it" th:replace="~{default}"
+      th:insert="~{default :: maincontent(~{ :: .main-content})}">
+<body>
+    <div class="main-content">
+        <table>
+            <tr>
+                <th></th>
+                <th>Titolo</th>
+            </tr>
+            <tr th:each=" plItem : ${playlistItems}">
+                <td th:text="${plItem.thumbnail}"></td>
+                <td th:text="${plItem.title}">Title</td>
+            </tr>
+        </table>
+    </div>
+</html>

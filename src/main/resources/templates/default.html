@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="'Youtube playlist manager - '+${null != title ? title : ''}"></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+<a th:href="@{/logout}"> <i class="icon-off"></i> Logout</a>
+<main class="my-5">
+    <div class="container">
+        <p th:if="${MSG_SUCCESS}" th:text="${MSG_SUCCESS}" class="alert alert-success mb-4" role="alert"></p>
+        <p th:if="${MSG_INFO}" th:text="${MSG_INFO}" class="alert alert-info mb-4" role="alert"></p>
+        <p th:if="${MSG_ERROR}" th:text="${MSG_ERROR}" class="alert alert-danger mb-4" role="alert" ></p>
+    </div>
+    <div class="main-content" th:fragment="maincontent(content)">
+        <div th:replace="${content}"></div>
+    </div>
+</main>
+</body>
+</html>
