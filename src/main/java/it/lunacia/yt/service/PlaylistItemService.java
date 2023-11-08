@@ -22,6 +22,6 @@ public class PlaylistItemService {
             Mono.just("OK"));
     }
     public Flux<ImportedPlaylistItemDTO> getPlaylistDetail(final String ytPlaylistId){
-        return playlistItemRepository.findPlaylistItemByYtPlaylistId(ytPlaylistId).map(ImportedPlaylistItemDTO::new).take(5);
+        return playlistItemRepository.findPlaylistItemByYtPlaylistId(ytPlaylistId).map(ImportedPlaylistItemDTO::new);
     }
 }

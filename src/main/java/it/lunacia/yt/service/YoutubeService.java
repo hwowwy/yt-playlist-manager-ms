@@ -40,12 +40,13 @@ public class YoutubeService extends BaseService{
         return performCall(HttpMethod.GET,"/channels", Optional.of(params),Object.class);
     }
 
-    public  Flux<PlaylistDTO> retrieveMyPlaylists(){
+    public  Mono<PlaylistsListDTO> retrieveMyPlaylists(Optional<String> nextPageToken){
         HttpHeaders params = new HttpHeaders();
         params.add("part","snippet");
         params.add("mine","true");
         params.add("key",apikey);
-        return performCall(HttpMethod.GET,"/playlists",Optional.of(params), PlaylistsListDTO.class).switchIfEmpty(Mono.empty()).flatMapMany(res -> Flux.fromIterable(res.items()));
+        nextPageToken.ifPresent(s -> params.add("pageToken", s));
+        return performCall(HttpMethod.GET,"/playlists",Optional.of(params), PlaylistsListDTO.class).switchIfEmpty(Mono.empty());
     }
     public  Mono<PlaylistsListDTO> retrievePlaylist(final String ytPlaylistId){
         HttpHeaders params = new HttpHeaders();

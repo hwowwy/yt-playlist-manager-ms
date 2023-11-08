@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.result.view.Rendering;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -25,12 +27,12 @@ public class IndexController extends BaseController{
     private YoutubeService ytService;
 
     @GetMapping("/")
-    public Mono<Rendering> index(Model model, WebSession session){
+    public Mono<Rendering> index(Model model, WebSession session, @RequestParam(value="nextToken",required = false) final String nextToken){
         return playlistService.importedPlaylists().collectList().flatMap(importedPlaylists -> {
            List<String> importedIds = importedPlaylists.stream().map(ImportedPlaylistDTO::ytPlaylistId).toList();
-            return ytService.retrieveMyPlaylists().collectList().flatMap(availablePlaylists -> {
-                List<ImportedPlaylistDTO> filteredAvailablePlaylists = availablePlaylists.stream().filter(el -> !importedIds.contains(el.id())).map(ImportedPlaylistDTO::new).toList();
-                return setRedirectAttributes(model,session).thenReturn(Rendering.view("index").modelAttribute("importedPlaylists",importedPlaylists).modelAttribute("availablePlaylists",filteredAvailablePlaylists).build());
+            return ytService.retrieveMyPlaylists(Optional.ofNullable(nextToken)).flatMap(availablePlaylists -> {
+                List<ImportedPlaylistDTO> filteredAvailablePlaylists = availablePlaylists.items().stream().filter(el -> !importedIds.contains(el.id())).map(ImportedPlaylistDTO::new).toList();
+                return setRedirectAttributes(model,session).thenReturn(Rendering.view("index").modelAttribute("nextPageToken",availablePlaylists.nextPageToken()).modelAttribute("importedPlaylists",importedPlaylists).modelAttribute("availablePlaylists",filteredAvailablePlaylists).build());
             });
         });
     }

@@ -3,7 +3,7 @@ package it.lunacia.yt.controller;
 import it.lunacia.yt.playlist.items.dto.PlaylistItemDTO;
 import it.lunacia.yt.playlists.dto.CreatePlaylistDTO;
 import it.lunacia.yt.playlists.dto.ImportedPlaylistDTO;
-import it.lunacia.yt.playlists.dto.PlaylistDTO;
+import it.lunacia.yt.playlists.dto.PlaylistsListDTO;
 import it.lunacia.yt.service.PlaylistService;
 import it.lunacia.yt.service.YoutubeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class PlaylistController {
@@ -31,12 +32,12 @@ public class PlaylistController {
     }
 
     @GetMapping("/playlists")
-    public Flux<PlaylistDTO> playlists(){
-        return ytService.retrieveMyPlaylists();
+    public Mono<PlaylistsListDTO> playlists(@RequestParam(value="nextToken",required = false) final String nextToken){
+        return ytService.retrieveMyPlaylists(Optional.ofNullable(nextToken));
     }
 
     @GetMapping("/playlist/{id}")
-    public Flux<PlaylistItemDTO> playlists(@PathVariable("id") final String playListId){
+    public Flux<PlaylistItemDTO> playlist(@PathVariable("id") final String playListId){
         return ytService.retrievePlaylistElements(playListId);
     }
 

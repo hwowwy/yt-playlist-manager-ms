@@ -40,6 +40,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-undertow'
 	implementation('org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0')
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.1.5'
+	compileOnly 'io.mongock:mongock-springboot:5.3.5'
+	implementation 'io.mongock:mongock-driver-core:5.3.5'
 }
 
 tasks.named('test') {

@@ -27,9 +27,10 @@ public class PlaylistService {
             }
             return Mono.error(new RuntimeException("Something went wrong"));
         }).onErrorReturn("KO");
-        Flux<String> savePlaylistItems = youtubeService.retrievePlaylistElements(ytPlaylistId).flatMap(item ->
-                 playlistItemService.savePlaylistItems(ytPlaylistId,item)
-        ).flatMap(res -> Mono.just("OK")).onErrorReturn("KO");
+        Mono<String> savePlaylistItems = youtubeService.retrievePlaylistElements(ytPlaylistId).collectList().flatMap(items ->{
+                items.forEach(item -> playlistItemService.savePlaylistItems(ytPlaylistId,item).subscribe());
+                return Mono.just("OK");}
+        ).onErrorReturn("KO");
         return Flux.zip(savePlaylist,savePlaylistItems).map(tuple -> {
             return tuple.getT1().equalsIgnoreCase("OK") && tuple.getT2().equalsIgnoreCase("OK") ? "OK" : "KO";
         });

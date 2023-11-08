@@ -16,5 +16,29 @@
         <div th:replace="${content}"></div>
     </div>
 </main>
+<footer>
+    <script>
+        // Attach a click event listener to all buttons with the class "action-button"
+        document.querySelectorAll('.action-button').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                // Retrieve the "data-action" attribute from the clicked button
+                const action = event.currentTarget.getAttribute('data-href');
+                const method = event.currentTarget.getAttribute('data-method');
+                const xhr = new XMLHttpRequest();
+                xhr.open(method, action, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        alert('Playlist imported correctly');
+                        location.reload();
+                    } else {
+                        // Handle AJAX error and show error toast
+                        alert("An error occurred: " + xhr.statusText);
+                    }
+                };
+                xhr.send();
+            });
+        });
+    </script>
+</footer>
 </body>
 </html>

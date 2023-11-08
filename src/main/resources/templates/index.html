@@ -15,7 +15,7 @@
                 <td th:text="${pl.title}"></td>
                 <td th:text="${pl.title}"></td>
                 <td><a th:href="@{/playlist/detail/{id}(id=${pl.ytPlaylistId})}">Visualizza</a></td>
-                <td><a th:href="@{/import/playlist/{id}(id=${pl.ytPlaylistId})}">Elimina</a></td>
+                <td><button class="action-button" data-method="DELETE" th:data-href="@{/playlist/{id}(id=${pl.ytPlaylistId})}">Elimina</button></td>
             </tr>
         </table>
         <h1>Playlist available</h1>
@@ -31,8 +31,11 @@
                 <td th:text="${pl.title}"></td>
                 <td th:text="${pl.title}"></td>
                 <td><a th:href="@{/playlist/detail/{id}(id=${pl.ytPlaylistId})}">Visualizza</a></td>
-                <td><a th:href="@{/import/playlist/{id}(id=${pl.ytPlaylistId})}">Importa</a></td>
+                <td><button class="action-button" data-method="GET" th:data-href="@{/import/playlist/{id}(id=${pl.ytPlaylistId})}">Importa</button></td>
             </tr>
         </table>
+        <div>
+            <a th:if="${nextPageToken != null}" th:href="@{/(nextToken=${nextPageToken})}">Next</a>
+        </div>
     </div>
 </html>
