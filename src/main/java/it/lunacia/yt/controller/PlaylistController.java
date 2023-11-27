@@ -55,4 +55,9 @@ public class PlaylistController {
     public Flux<ImportedPlaylistDTO> importedPlaylists(){
         return playlistService.importedPlaylists();
     }
+
+    @PostMapping("/playlist/{srcYtPlaylistId}/{destYtPlaylistId}")
+    public Mono<Object> saveImportedPlaylistToPlaylist(@PathVariable("srcYtPlaylistId") final String srcYtPlaylistId,@PathVariable("destYtPlaylistId") final String destYtPlaylistId){
+        return playlistService.createPlaylistFromImportedPlaylist(srcYtPlaylistId, destYtPlaylistId);
+    }
 }

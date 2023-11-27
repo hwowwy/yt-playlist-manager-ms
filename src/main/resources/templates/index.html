@@ -16,6 +16,7 @@
                 <td th:text="${pl.title}"></td>
                 <td><a th:href="@{/playlist/detail/{id}(id=${pl.ytPlaylistId})}">Visualizza</a></td>
                 <td><button class="action-button" data-method="DELETE" th:data-href="@{/playlist/{id}(id=${pl.ytPlaylistId})}">Elimina</button></td>
+                <td><button class="action-button" data-method="DELETE" th:data-href="@{/playlist/{id}(id=${pl.ytPlaylistId})}">Trasferisci</button></td>
             </tr>
         </table>
         <h1>Playlist available</h1>

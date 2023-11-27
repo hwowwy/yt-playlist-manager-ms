@@ -13,6 +13,7 @@ import org.springframework.web.reactive.result.view.Rendering;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,9 @@ public class IndexController extends BaseController{
            List<String> importedIds = importedPlaylists.stream().map(ImportedPlaylistDTO::ytPlaylistId).toList();
             return ytService.retrieveMyPlaylists(Optional.ofNullable(nextToken)).flatMap(availablePlaylists -> {
                 List<ImportedPlaylistDTO> filteredAvailablePlaylists = availablePlaylists.items().stream().filter(el -> !importedIds.contains(el.id())).map(ImportedPlaylistDTO::new).toList();
-                return setRedirectAttributes(model,session).thenReturn(Rendering.view("index").modelAttribute("nextPageToken",availablePlaylists.nextPageToken()).modelAttribute("importedPlaylists",importedPlaylists).modelAttribute("availablePlaylists",filteredAvailablePlaylists).build());
+                List<ImportedPlaylistDTO> resultingPlaylists = new ArrayList<>(filteredAvailablePlaylists);
+                resultingPlaylists.add(new ImportedPlaylistDTO("I miei mi piace","Playlist automatica dei mi piace","LL","#"));
+                return setRedirectAttributes(model,session).thenReturn(Rendering.view("index").modelAttribute("nextPageToken",availablePlaylists.nextPageToken()).modelAttribute("importedPlaylists",importedPlaylists).modelAttribute("availablePlaylists",resultingPlaylists).build());
             });
         });
     }

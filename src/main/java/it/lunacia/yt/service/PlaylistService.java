@@ -39,4 +39,14 @@ public class PlaylistService {
     public Flux<ImportedPlaylistDTO> importedPlaylists(){
         return playListRepository.findAll().map(ImportedPlaylistDTO::new);
     }
+
+    public Mono<Object> createPlaylistFromImportedPlaylist(String srcYtPlaylistId, String destYtPlaylistId){
+        return playListRepository.findPlaylistByYtPlaylistId(srcYtPlaylistId)
+                .flatMap(importedPlaylist ->youtubeService.retrievePlaylist(destYtPlaylistId))
+                .flatMap(importedPlaylist ->
+                        playlistItemService.getPlaylistDetail(srcYtPlaylistId).collectList().flatMap(items -> {
+                            items.forEach(item -> youtubeService.insertPlaylistItem(destYtPlaylistId,item.id()).subscribe());
+                            return Mono.just("OK");
+           }));
+    }
 }

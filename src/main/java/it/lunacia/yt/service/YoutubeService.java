@@ -3,6 +3,8 @@ package it.lunacia.yt.service;
 import it.lunacia.yt.constants.YoutubePlaylistPrivacyEnum;
 import it.lunacia.yt.playlist.items.dto.PlaylistItemDTO;
 import it.lunacia.yt.playlist.items.dto.PlaylistItemsDTO;
+import it.lunacia.yt.playlist.items.dto.SavePlaylistItemDTO;
+import it.lunacia.yt.playlist.items.dto.SavePlaylistItemSnippetDTO;
 import it.lunacia.yt.playlists.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,5 +87,13 @@ public class YoutubeService extends BaseService{
         localizations.put("it",new SavePlaylistLocalizationDTO(playlistName,description));
         SavePlaylistDTO request = new SavePlaylistDTO(new SavePlaylistSnippetDTO(playlistName,description,"it"),new SavePlaylistStatusDTO(privacyStatus),localizations);
         return performCall(HttpMethod.POST,"/playlists",Optional.of(params),Optional.of(request),Object.class);
+    }
+
+    public Mono<Object> insertPlaylistItem(final String ytPlaylistId, final String ytResourceId){
+        HttpHeaders params = new HttpHeaders();
+        params.add("part","snippet,status,localizations");
+        params.add("key",apikey);
+        SavePlaylistItemDTO request = new SavePlaylistItemDTO(new SavePlaylistItemSnippetDTO(ytPlaylistId,ytResourceId));
+        return performCall(HttpMethod.POST,"/playlistItems",Optional.of(params),Optional.of(request),Object.class);
     }
 }
