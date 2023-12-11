@@ -3,16 +3,34 @@
 <head>
     <title th:text="'Youtube playlist manager - '+${null != title ? title : ''}"></title>
     <meta charset="utf-8" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-grid.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-reboot.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <!-- jQuery library -->
+    <script th:src="@{/js/jquery.min.js}"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script th:src="@{/js/bootstrap.bundle.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
 </head>
-<body>
-<a th:href="@{/logout}"> <i class="icon-off"></i> Logout</a>
+<body class="bg-dark">
+<div class="container">
+<div class="row">
+    <div class="col-md-12 text-right">
+        <a class="text-primary fs-medium" th:href="@{/logout}">Logout <i class="bi bi-door-closed"></i></a>
+    </div>
+</div>
+</div>
 <main class="my-5">
     <div class="container">
         <p th:if="${MSG_SUCCESS}" th:text="${MSG_SUCCESS}" class="alert alert-success mb-4" role="alert"></p>
         <p th:if="${MSG_INFO}" th:text="${MSG_INFO}" class="alert alert-info mb-4" role="alert"></p>
         <p th:if="${MSG_ERROR}" th:text="${MSG_ERROR}" class="alert alert-danger mb-4" role="alert" ></p>
     </div>
-    <div class="main-content" th:fragment="maincontent(content)">
+    <div class="main-content container" th:fragment="maincontent(content)">
         <div th:replace="${content}"></div>
     </div>
 </main>

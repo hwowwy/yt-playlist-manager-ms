@@ -1,42 +1,197 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="it" th:replace="~{default}"
       th:insert="~{default :: maincontent(~{ :: .main-content})}">
-    <div class="main-content">
-        <h1>Imported playlists</h1>
-        <table>
-            <tr>
-                <th></th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-            <tr th:each=" pl : ${importedPlaylists}">
-                <td><img th:alt="plthumbnail" th:src="${pl.thumbnail}" /></td>
-                <td th:text="${pl.title}"></td>
-                <td th:text="${pl.title}"></td>
-                <td><a th:href="@{/playlist/detail/{id}(id=${pl.ytPlaylistId})}">Visualizza</a></td>
-                <td><button class="action-button" data-method="DELETE" th:data-href="@{/playlist/{id}(id=${pl.ytPlaylistId})}">Elimina</button></td>
-                <td><button class="action-button" data-method="DELETE" th:data-href="@{/playlist/{id}(id=${pl.ytPlaylistId})}">Trasferisci</button></td>
-            </tr>
-        </table>
-        <h1>Playlist available</h1>
-        <table>
-            <tr>
-                <th></th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-            <tr th:each=" pl : ${availablePlaylists}">
-                <td><img th:alt="plthumbnail" th:src="${pl.thumbnail}" /></td>
-                <td th:text="${pl.title}"></td>
-                <td th:text="${pl.title}"></td>
-                <td><a th:href="@{/playlist/detail/{id}(id=${pl.ytPlaylistId})}">Visualizza</a></td>
-                <td><button class="action-button" data-method="GET" th:data-href="@{/import/playlist/{id}(id=${pl.ytPlaylistId})}">Importa</button></td>
-            </tr>
-        </table>
-        <div>
-            <a th:if="${nextPageToken != null}" th:href="@{/(nextToken=${nextPageToken})}">Next</a>
+    <div class="main-content container">
+        <div class="row">
+            <button class="btn btn-secondary" onclick="openCreatePlaylistModal()">Crea playlist <i class="bi bi-plus-square-fill"></i></button>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Imported playlists</h1>
+            </div>
+            <div class="col-md-12">
+                <table class="table-dark">
+                    <tr>
+                        <th></th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr th:each=" pl : ${importedPlaylists}">
+                        <td><img th:alt="plthumbnail" th:src="${pl.thumbnail}" /></td>
+                        <td th:text="${pl.title}"></td>
+                        <td th:text="${pl.title}"></td>
+                        <td><a class="btn btn-primary" th:href="@{/playlist/detail/{id}(id=${pl.ytPlaylistId})}">Visualizza</a></td>
+                        <td><button class="action-button btn btn-secondary" data-method="DELETE" th:data-href="@{/playlist/{id}(id=${pl.ytPlaylistId})}">Elimina</button></td>
+                        <td><button class="btn btn-secondary" th:data-playlistid="${pl.ytPlaylistId}" onclick="openTransferModal(this)">Trasferisci</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Playlist available</h1>
+            </div>
+            <div class="col-md-12">
+                <table class="table-dark">
+                    <tr>
+                        <th></th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr th:each=" pl : ${availablePlaylists}">
+                        <td><img th:alt="plthumbnail" th:src="${pl.thumbnail}" /></td>
+                        <td th:text="${pl.title}"></td>
+                        <td th:text="${pl.title}"></td>
+                        <td><a class="btn btn-primary" th:href="@{/playlist/detail/{id}(id=${pl.ytPlaylistId})}">Visualizza</a></td>
+                        <td><button class="action-button btn btn-secondary" data-method="GET" th:data-href="@{/import/playlist/{id}(id=${pl.ytPlaylistId})}">Importa</button></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-12">
+                <a th:if="${nextPageToken != null}" th:href="@{/(nextToken=${nextPageToken})}">Next</a>
+            </div>
+        </div>
+        <div id="transfer-modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content bg-dark text-white">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Seleziona la playlist in cui vuoi travasare gli elementi</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                            <form id="transferForm">
+                                <input type="hidden" id="playlistid" value="" />
+                                <label for="playlistname">Nome playlist</label>
+                                <select class="form-control bg-dark text-white" id="playlistname" name="dropdownSelect"></select>
+                            </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="submitTransferForm()">Conferma</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="create-playlist-modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content bg-dark text-white">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Inserisci il nome della playlist che vuoi creare</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <form id="createForm">
+                            <label for="createplaylistname">Nome playlist</label>
+                            <input type="text" id="createplaylistname" />
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="submitCreatePlaylistForm()">Conferma</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function populateDropdown() {
+                // AJAX request to fetch dropdown options
+                $.ajax({
+                    type: "GET",  // Adjust the HTTP method as needed
+                    url: "/yt/playlists",  // Replace with your actual API endpoint
+                    success: function(response) {
+                        // Handle the success response and populate the dropdown
+                        let dropdownSelect = document.getElementById("playlistname");
+
+                        // Clear existing options
+                        dropdownSelect.innerHTML = "";
+
+                        // Add new options
+                        response.items.forEach(function(option) {
+                            let optionElement = document.createElement("option");
+                            optionElement.value = option.id;
+                            optionElement.text = option.snippet.title;
+                            dropdownSelect.appendChild(optionElement);
+                        });
+                    },
+                    error: function(error) {
+                        // Handle the error response
+                        console.error("AJAX request failed", error);
+                        // Optionally, display an error message to the user
+                    }
+                });
+            }
+            function openTransferModal(button){
+                document.getElementById("playlistid").value = button.getAttribute('data-playlistid');
+                $('#transfer-modal').modal('show');
+                populateDropdown();
+            }
+            function openCreatePlaylistModal(){
+                $('#create-playlist-modal').modal('show');
+            }
+        </script>
+        <script>
+            function submitTransferForm(){
+                let playlistname = document.getElementById("playlistname").value;
+                let playlistid = document.getElementById("playlistid").value;
+                let payload ={
+                    playlistid: playlistid,
+                    playlistname: playlistname
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/yt/playlist/"+playlistid+"/"+playlistname,
+                    contentType: 'application/json;charset=UTF-8',
+                    dataType: 'json',
+                    data: JSON.stringify(payload),
+                    success: function(response) {
+                        // Handle the success response
+                        console.log("AJAX request successful", response);
+                        // Close the modal if needed
+                        $('#transfer-modal').modal('hide');
+                    },
+                    error: function(error) {
+                        // Handle the error response
+                        console.error("AJAX request failed", error);
+                        // Optionally, display an error message to the user
+                    }
+                });
+            }
+            function submitCreatePlaylistForm(){
+                let playlistname = document.getElementById("createplaylistname").value;
+                let payload = {
+                    title: playlistname,
+                    description: playlistname,
+                    privacy: 'PRIVATE'
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/yt/playlist",
+                    data: JSON.stringify(payload),
+                    contentType: 'application/json;charset=UTF-8',
+                    dataType: 'json',
+                    success: function(response) {
+                        // Handle the success response
+                        console.log("AJAX request successful", response);
+                        // Close the modal if needed
+                        $('#create-playlist-modal').modal('hide');
+                    },
+                    error: function(error) {
+                        // Handle the error response
+                        console.error("AJAX request failed", error);
+                        // Optionally, display an error message to the user
+                    }
+                });
+            }
+        </script>
     </div>
 </html>

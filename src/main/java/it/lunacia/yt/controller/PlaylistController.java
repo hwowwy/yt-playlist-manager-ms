@@ -57,7 +57,7 @@ public class PlaylistController {
     }
 
     @PostMapping("/playlist/{srcYtPlaylistId}/{destYtPlaylistId}")
-    public Mono<Object> saveImportedPlaylistToPlaylist(@PathVariable("srcYtPlaylistId") final String srcYtPlaylistId,@PathVariable("destYtPlaylistId") final String destYtPlaylistId){
+    public Mono<Object> saveImportedPlaylistToPlaylist(@PathVariable("srcYtPlaylistId") final String srcYtPlaylistId,@PathVariable("destYtPlaylistId") final String destYtPlaylistId, ServerWebExchange exchange){
         return playlistService.createPlaylistFromImportedPlaylist(srcYtPlaylistId, destYtPlaylistId);
     }
 }

@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .authorizeExchange(authorize -> authorize
                         .anyExchange().authenticated()
                 )
-                .oauth2Login(withDefaults()).csrf(ServerHttpSecurity.CsrfSpec::disable);
+                .oauth2Login(withDefaults()).csrf(ServerHttpSecurity.CsrfSpec::disable).oauth2Client(withDefaults());
 
         return http.build();
     }

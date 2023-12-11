@@ -1,7 +1,9 @@
 package it.lunacia.yt.service;
 
 import it.lunacia.yt.entity.Playlist;
+import it.lunacia.yt.playlist.items.dto.ImportedPlaylistItemDTO;
 import it.lunacia.yt.playlists.dto.ImportedPlaylistDTO;
+import it.lunacia.yt.playlists.dto.PlaylistsListDTO;
 import it.lunacia.yt.repository.PlaylistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,12 +43,14 @@ public class PlaylistService {
     }
 
     public Mono<Object> createPlaylistFromImportedPlaylist(String srcYtPlaylistId, String destYtPlaylistId){
-        return playListRepository.findPlaylistByYtPlaylistId(srcYtPlaylistId)
-                .flatMap(importedPlaylist ->youtubeService.retrievePlaylist(destYtPlaylistId))
-                .flatMap(importedPlaylist ->
-                        playlistItemService.getPlaylistDetail(srcYtPlaylistId).collectList().flatMap(items -> {
-                            items.forEach(item -> youtubeService.insertPlaylistItem(destYtPlaylistId,item.id()).subscribe());
-                            return Mono.just("OK");
-           }));
+        Flux<ImportedPlaylistItemDTO> playlistItems =playlistItemService.getPlaylistDetail(srcYtPlaylistId);
+        Mono<Playlist> playlist =playListRepository.findPlaylistByYtPlaylistId(srcYtPlaylistId);
+        Mono<PlaylistsListDTO> destinationPlaylist =youtubeService.retrievePlaylist(destYtPlaylistId);
+        return playlist.zipWith(destinationPlaylist).flatMap(tuple -> {
+                return playlistItems.flatMap(item -> {
+                    return youtubeService.insertPlaylistItem(destYtPlaylistId,item.id());
+                }).collectList();
+        });
     }
+
 }

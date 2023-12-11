@@ -1,0 +1,9 @@
+/*.modal-content {*/
+/*    background-color: #000; !* Black background color *!*/
+/*    color: #fff; !* Text color, adjust as needed *!*/
+/*}*/
+
+/*!* Customize the overlay color *!*/
+/*.modal-backdrop.show {*/
+/*    background-color: rgba(0, 0, 0, 0.5); !* Black background color with 50% opacity *!*/
+/*}*/

@@ -32,10 +32,13 @@ public class IndexController extends BaseController{
         return playlistService.importedPlaylists().collectList().flatMap(importedPlaylists -> {
            List<String> importedIds = importedPlaylists.stream().map(ImportedPlaylistDTO::ytPlaylistId).toList();
             return ytService.retrieveMyPlaylists(Optional.ofNullable(nextToken)).flatMap(availablePlaylists -> {
-                List<ImportedPlaylistDTO> filteredAvailablePlaylists = availablePlaylists.items().stream().filter(el -> !importedIds.contains(el.id())).map(ImportedPlaylistDTO::new).toList();
-                List<ImportedPlaylistDTO> resultingPlaylists = new ArrayList<>(filteredAvailablePlaylists);
-                resultingPlaylists.add(new ImportedPlaylistDTO("I miei mi piace","Playlist automatica dei mi piace","LL","#"));
-                return setRedirectAttributes(model,session).thenReturn(Rendering.view("index").modelAttribute("nextPageToken",availablePlaylists.nextPageToken()).modelAttribute("importedPlaylists",importedPlaylists).modelAttribute("availablePlaylists",resultingPlaylists).build());
+                if(!availablePlaylists.items().isEmpty()) {
+                    List<ImportedPlaylistDTO> filteredAvailablePlaylists = availablePlaylists.items().stream().filter(el -> !importedIds.contains(el.id())).map(ImportedPlaylistDTO::new).toList();
+                    List<ImportedPlaylistDTO> resultingPlaylists = new ArrayList<>(filteredAvailablePlaylists);
+                    resultingPlaylists.add(new ImportedPlaylistDTO("I miei mi piace", "Playlist automatica dei mi piace", "LL", "#"));
+                    return setRedirectAttributes(model, session).thenReturn(Rendering.view("index").modelAttribute("nextPageToken", availablePlaylists.nextPageToken()).modelAttribute("importedPlaylists", importedPlaylists).modelAttribute("availablePlaylists", resultingPlaylists).build());
+                }
+                return setRedirectAttributes(model, session).thenReturn(Rendering.view("index").modelAttribute("nextPageToken", null).modelAttribute("importedPlaylists", importedPlaylists).modelAttribute("availablePlaylists", new ArrayList<>()).build());
             });
         });
     }

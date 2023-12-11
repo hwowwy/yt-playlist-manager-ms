@@ -91,7 +91,7 @@ public class YoutubeService extends BaseService{
 
     public Mono<Object> insertPlaylistItem(final String ytPlaylistId, final String ytResourceId){
         HttpHeaders params = new HttpHeaders();
-        params.add("part","snippet,status,localizations");
+        params.add("part","snippet");
         params.add("key",apikey);
         SavePlaylistItemDTO request = new SavePlaylistItemDTO(new SavePlaylistItemSnippetDTO(ytPlaylistId,ytResourceId));
         return performCall(HttpMethod.POST,"/playlistItems",Optional.of(params),Optional.of(request),Object.class);
