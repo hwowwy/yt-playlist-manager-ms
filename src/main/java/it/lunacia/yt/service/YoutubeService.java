@@ -1,10 +1,7 @@
 package it.lunacia.yt.service;
 
 import it.lunacia.yt.constants.YoutubePlaylistPrivacyEnum;
-import it.lunacia.yt.playlist.items.dto.PlaylistItemDTO;
-import it.lunacia.yt.playlist.items.dto.PlaylistItemsDTO;
-import it.lunacia.yt.playlist.items.dto.SavePlaylistItemDTO;
-import it.lunacia.yt.playlist.items.dto.SavePlaylistItemSnippetDTO;
+import it.lunacia.yt.playlist.items.dto.*;
 import it.lunacia.yt.playlists.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,7 +86,7 @@ public class YoutubeService extends BaseService{
         return performCall(HttpMethod.POST,"/playlists",Optional.of(params),Optional.of(request),Object.class);
     }
 
-    public Mono<Object> insertPlaylistItem(final String ytPlaylistId, final String ytResourceId){
+    public Mono<Object> insertPlaylistItem(final String ytPlaylistId, final PlaylistSnippetResourceIdDTO ytResourceId){
         HttpHeaders params = new HttpHeaders();
         params.add("part","snippet");
         params.add("key",apikey);

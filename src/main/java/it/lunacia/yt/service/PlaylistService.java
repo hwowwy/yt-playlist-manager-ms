@@ -2,6 +2,7 @@ package it.lunacia.yt.service;
 
 import it.lunacia.yt.entity.Playlist;
 import it.lunacia.yt.playlist.items.dto.ImportedPlaylistItemDTO;
+import it.lunacia.yt.playlist.items.dto.PlaylistSnippetResourceIdDTO;
 import it.lunacia.yt.playlists.dto.ImportedPlaylistDTO;
 import it.lunacia.yt.playlists.dto.PlaylistsListDTO;
 import it.lunacia.yt.repository.PlaylistRepository;
@@ -48,7 +49,7 @@ public class PlaylistService {
         Mono<PlaylistsListDTO> destinationPlaylist =youtubeService.retrievePlaylist(destYtPlaylistId);
         return playlist.zipWith(destinationPlaylist).flatMap(tuple -> {
                 return playlistItems.flatMap(item -> {
-                    return youtubeService.insertPlaylistItem(destYtPlaylistId,item.id());
+                    return youtubeService.insertPlaylistItem(destYtPlaylistId,new PlaylistSnippetResourceIdDTO(item.kind(),item.videoId()));
                 }).collectList();
         });
     }

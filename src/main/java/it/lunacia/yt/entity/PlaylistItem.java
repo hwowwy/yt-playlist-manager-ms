@@ -26,11 +26,14 @@ public class PlaylistItem {
 
     private String ytPlaylistId;
 
+    private String kind;
+
     public PlaylistItem(PlaylistItemDTO item, String ytPlaylistId){
-        this.itemId = item.id();
+        this.itemId = item.snippet().resourceId().videoId();
         this.title = item.snippet().title();
         this.thumbnail = item.snippet().thumbnails().get("default").url();
         this.ytPlaylistId = ytPlaylistId;
         this.description = item.snippet().description();
+        this.kind = item.snippet().resourceId().kind();
     }
 }
